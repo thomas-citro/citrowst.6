@@ -30,7 +30,6 @@ int main(int argc, char* argv[]) {
 	
 	// Setup resources (shared memory, message queue, semaphore)
 	if ((shmid = shmget(SHM_KEY, sizeof(sm), 0600)) < 0) {
-		perror("Error: shared memory");
 		exit(0);
 	}
 	if ((messageQ = msgget(MSG_KEY, 0777)) == -1 ) {
