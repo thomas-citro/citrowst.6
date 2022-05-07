@@ -87,6 +87,7 @@ int main(int argc, char* argv[]) {
 		if (waitpid(cpid, NULL, WNOHANG) > 0) {
 			procCounter--;
 		}
+		incrementClock(&ptr->time, 0, TEN_THOUSAND);
 		int nextFork = getRandomInteger(ONE_MILLION, FIVE_HUNDRED_MILLION); // Next fork between 1ms and 500ms
 		incrementClock(&randFork, 0, nextFork);
 		
@@ -276,6 +277,8 @@ void displayMemoryMap() {
 }
 
 void displayStatistics() {
+	printf("Debugging statement... (float)(totalMemoryRequests) == %f, (float)(ptr->time.seconds) == %f\n", (float)(totalMemoryRequests), (float)(ptr->time.seconds));
+	
 	printf("\nNumber of memory accesses per second: %f\n",(((float)(totalMemoryRequests))/((float)(ptr->time.seconds))));	
 	printf("Number of page faults per memory access: %f\n",((float)(totalFaults)/(float)totalMemoryRequests));
 	printf("Average memory access speed: %f\n\n", (((float)(ptr->time.seconds)+((float)ptr->time.nanoseconds/(float)(ONE_BILLION)))/((float)totalMemoryRequests)));
@@ -316,10 +319,8 @@ int findFrame() {
 void pageSend(int pageNum, int frameNum, int dirtyBitValue) {
 	// Insert into tail of FIFO queue
 	FIFO[tailFIFO] = frameNum;
-	printf("Added %d to tail of FIFO queue. FIFO[%d] = %d\n", frameNum, tailFIFO, frameNum);
 	if (tailFIFO == 255) tailFIFO = 0;
 	else tailFIFO++;
-	printf("Now tailFIFO == %d\n", tailFIFO);
 	
 	// Set information about page
 	mem->dirtyBit[frameNum] = dirtyBitValue;
@@ -330,7 +331,7 @@ void pageSend(int pageNum, int frameNum, int dirtyBitValue) {
 
 // Find page to replace
 int findPageReplacement() {
-	printf("	Need to find page replacement. headFIFO == %d, tailFIFO == %d\n", headFIFO, tailFIFO);
+	printf("Need page replacement\n");
 	int frameNum = FIFO[headFIFO];
 	FIFO[headFIFO] = -1;
 	if (headFIFO == 255) headFIFO = 0;
