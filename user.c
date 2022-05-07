@@ -62,18 +62,20 @@ int main(int argc, char* argv[]) {
 				strcpy(msg.mtext, "READ");
 				msg.msgType = 99;
 				msgsnd(messageQ, &msg, sizeof(msg), 0);
-				int request = getRandomInteger(0, 32); // Random value from 0 to limit of pages proc would have access to (32)
-				request *= 1024; // Multiplied by 1024
-				request += getRandomInteger(0, 1023); // Random offset in range (0, 1023) to get actual memory address requested
+
+				// Random value from 0 to limit of pages proc has access to. Multiplied by 1024 with an additional offset in range (0, 1023).
+				// 31998 is the limit. Any more and it will cause a segmentation fault.
+				int request = getRandomInteger(0, 31998);
 				sprintf(msg.mtext, "%d", request);
 				msgsnd(messageQ, &msg, sizeof(msg), 0);
 			} else {
 				strcpy(msg.mtext, "WRITE");
 				msg.msgType = 99;
 				msgsnd(messageQ, &msg, sizeof(msg),0);
-				int write = getRandomInteger(0, 32); // Random value from 0 to limit of pages proc would have access to (32)
-				write *= 1024; // Multiplied by 1024
-				write += getRandomInteger(0, 1023); // Random offset in range (0, 1023) to get actual memory address requested	
+				
+				// Random value from 0 to limit of pages proc has access to. Multiplied by 1024 with an additional offset in range (0, 1023).
+				// 31998 is the limit. Any more and it will cause a segmentation fault.
+				int write = getRandomInteger(0, 31998);
 				sprintf(msg.mtext, "%d", write);
 				msgsnd(messageQ, &msg, sizeof(msg),0);
 			}

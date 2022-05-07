@@ -276,9 +276,7 @@ void displayMemoryMap() {
 	}
 }
 
-void displayStatistics() {
-	printf("Debugging statement... (float)(totalMemoryRequests) == %f, (float)(ptr->time.seconds) == %f\n", (float)(totalMemoryRequests), (float)(ptr->time.seconds));
-	
+void displayStatistics() {	
 	printf("\nNumber of memory accesses per second: %f\n",(((float)(totalMemoryRequests))/((float)(ptr->time.seconds))));	
 	printf("Number of page faults per memory access: %f\n",((float)(totalFaults)/(float)totalMemoryRequests));
 	printf("Average memory access speed: %f\n\n", (((float)(ptr->time.seconds)+((float)ptr->time.nanoseconds/(float)(ONE_BILLION)))/((float)totalMemoryRequests)));
@@ -331,7 +329,6 @@ void pageSend(int pageNum, int frameNum, int dirtyBitValue) {
 
 // Find page to replace
 int findPageReplacement() {
-	printf("Need page replacement\n");
 	int frameNum = FIFO[headFIFO];
 	FIFO[headFIFO] = -1;
 	if (headFIFO == 255) headFIFO = 0;
@@ -418,7 +415,7 @@ void cleanup() {
 // Control interrupts
 void sigErrors(int signum) {
 	if (signum == SIGINT) {
-		printf("\nInterrupted by ctrl-c\n");
+		printf("\nInterrupted by ctrl+c signal\n");
 		cleanup();
 		displayStatistics();
 	} else {
